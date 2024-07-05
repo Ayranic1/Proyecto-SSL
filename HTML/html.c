@@ -19,7 +19,7 @@ int main() {
     fprintf(fptr, "<head>\n");
     fprintf(fptr, "    <meta charset=\"UTF-8\">\n");
     fprintf(fptr, "    <title>синтаксис диких кодеров</title>\n");
-    fprintf(fptr, "<link rel=\"icon\" type=\"image/x-icon\" href=\"/images/favicon.ico\">\n");
+    fprintf(fptr, "<link rel=\"icon\" type=\"image/x-icon\" href=\"icon.png\">\n");
     fprintf(fptr, "</head>\n");
     fprintf(fptr, "<body>\n");
     fprintf(fptr, "    <h1>Grupo: xd</h1>\n");
