@@ -7,39 +7,6 @@ extern FILE *yyin;
 
 int parse_correcto = 1; //0 = incorrecto, 1 = correcto
 
-FILE *outfile;
-extern int Nlinea;
-
-
-//Creacion de html -- -- -- -- -- -- -- -- - 
-FILE *html;
-html = fopen("index.html", "w");
-
-if (html == NULL){
-    printf("Error al crear el documento html");
-    return 1;
-}
-
-printf("Se creo documento HTML\n"); // quitar para la entrega + + + + + + +
-//fprintf(html, "\n");
-
-    fprintf(html, "<!DOCTYPE html>\n");
-    fprintf(html, "<html>\n");
-    fprintf(html, "<head>\n");
-    fprintf(html, "    <meta charset=\"UTF-8\">\n");
-    fprintf(html, "    <title>синтаксис диких кодеров</title>\n");
-    fprintf(html, "    <link rel=\"icon\" type=\"image/x-icon\" href=\"icon.png\">\n");
-    fprintf(html, "    <style>\n");
-    fprintf(html, "    .emp-div {\n");
-    fprintf(html, "         border: 1px solid grey;\n");
-    fprintf(html, "         padding: 20px;\n");
-    fprintf(html, "    }\n");
-    fprintf(html, "    </style>\n");
-    fprintf(html, "</head>\n");
-    fprintf(html, "<body>\n");
-
-//------
-
 %}
 %union { 
     char string[30];
@@ -88,7 +55,7 @@ Sigma: Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete com
 
 LISTA: //este no
     | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-    | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave LOCACION Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA {fprintf(html, "<div class=\"emp-div\"> \n <h1>nombre empresa: $7<h1/> \n</div>\n");}
+    | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave LOCACION Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA {fprintf(htmlFile, "<div class=\"emp-div\"> \n <h1>nombre empresa: $7<h1/> \n</div>\n");}
     | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA {}
     | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave nulo Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA  {}
 ;
@@ -171,6 +138,35 @@ int main()
     int opcion;
     char buffer[256];
     char salir[10];
+
+    FILE *htmlFile;
+    htmlFile = fopen("index.html", "w");
+
+    if (htmlFile == NULL){
+        printf("Error al crear el documento html");
+        return 1;
+    }
+
+    printf("Se creo documento HTML\n"); // quitar para la entrega + + + + + + +
+    //fprintf(htmlFile, "\n");
+
+    fprintf(htmlFile, "<!DOCTYPE html>\n");
+    fprintf(htmlFile, "<html>\n");
+    fprintf(htmlFile, "<head>\n");
+    fprintf(htmlFile, "    <meta charset=\"UTF-8\">\n");
+    fprintf(htmlFile, "    <title>синтаксис диких кодеров</title>\n");
+    fprintf(htmlFile, "    <link rel=\"icon\" type=\"image/x-icon\" href=\"icon.png\">\n");
+    fprintf(htmlFile, "    <style>\n");
+    fprintf(htmlFile, "    .emp-div {\n");
+    fprintf(htmlFile, "         border: 1px solid grey;\n");
+    fprintf(htmlFile, "         padding: 20px;\n");
+    fprintf(htmlFile, "    }\n");
+    fprintf(htmlFile, "    </style>\n");
+    fprintf(htmlFile, "</head>\n");
+    fprintf(htmlFile, "<body>\n");
+
+    //------
+
     
     
     printf ("Bienvenido al analizador lexico json \n");
@@ -187,7 +183,7 @@ int main()
             printf ("ingrese la ruta al archivo de texto: ");
             scanf ("%s", buffer);
             yyin = fopen(buffer, "r");
-            fprintf(html, "<h1>Nombre del archivo: %s</h1>", buffer); // escribe el nombre del archivo en el doc HTML
+            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>", buffer); // escribe el nombre del archivo en el doc HTML
             if (!yyin) {
                 perror ("no se puede abrir el archivo");
                 remove("index.html"); // elimina el doc HTML generado
@@ -204,11 +200,11 @@ int main()
         printf("json correcto. \n");
 
         //Finalización del archivo html
-        fprintf(html, "</body>\n");
-        fprintf(html, "</html>\n");
+        fprintf(htmlFile, "</body>\n");
+        fprintf(htmlFile, "</html>\n");
 
         // Cerrar archivo
-        fclose(html);
+        fclose(htmlFile);
 
     } else {
         printf("json incorrecto. \n");
@@ -223,6 +219,4 @@ void yyerror(const char *s) {
     remove("index.html");
     return 0;
 }
-
-
 
