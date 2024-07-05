@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 extern int yylex();
+FILE *htmlFile;
 
 extern FILE *yyin; 
 
 int parse_correcto = 1; //0 = incorrecto, 1 = correcto
+
+
 
 %}
 %union { 
@@ -139,9 +142,8 @@ int main()
     char buffer[256];
     char salir[10];
 
-    FILE *htmlFile;
-    htmlFile = fopen("index.html", "w");
 
+    htmlFile = fopen("index.html", "w");
     if (htmlFile == NULL){
         printf("Error al crear el documento html");
         return 1;
