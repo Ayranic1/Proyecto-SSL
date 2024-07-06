@@ -74,14 +74,20 @@
 #include <stdlib.h>
 extern int yylex();
 
+FILE *htmlFile; // genera el HTML
+
 extern FILE *yyin; 
 
 int parse_correcto = 1; //0 = incorrecto, 1 = correcto
 
+FILE *outfile;
+extern int Nlinea;
+
+
 
 
 /* Line 189 of yacc.c  */
-#line 85 "parser.tab.c"
+#line 91 "parser.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -176,7 +182,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 11 "parser.y"
+#line 17 "parser.y"
  
     char string[30];
     int entero;
@@ -189,7 +195,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 193 "parser.tab.c"
+#line 199 "parser.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -201,7 +207,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 205 "parser.tab.c"
+#line 211 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -595,14 +601,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    39,    39,    40,    44,    45,    46,    47,    48,    49,
-      50,    51,    52,    53,    56,    57,    58,    59,    60,    62,
-      63,    64,    67,    68,    69,    70,    71,    72,    73,    74,
-      75,    79,    80,    81,    82,    83,    84,    85,    86,    88,
-      89,    90,    93,    94,    95,    96,    97,    98,    99,   100,
-     103,   104,   105,   106,   108,   109,   110,   113,   113,   113,
-     113,   113,   113,   113,   116,   117,   118,   119,   121,   122,
-     123,   126,   126,   126,   126,   126,   129,   130,   131
+       0,    45,    45,    46,    50,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    62,    63,    64,    65,    66,    68,
+      69,    70,    73,    74,    75,    76,    77,    78,    79,    80,
+      81,    85,    86,    87,    88,    89,    90,    91,    92,    94,
+      95,    96,    99,   100,   101,   102,   103,   104,   105,   106,
+     109,   110,   111,   112,   114,   115,   116,   119,   119,   119,
+     119,   119,   119,   119,   122,   123,   124,   125,   127,   128,
+     129,   132,   132,   132,   132,   132,   135,   136,   137
 };
 #endif
 
@@ -1882,140 +1888,140 @@ yyreduce:
         case 4:
 
 /* Line 1455 of yacc.c  */
-#line 44 "parser.y"
+#line 50 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 45 "parser.y"
+#line 51 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 46 "parser.y"
+#line 52 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 47 "parser.y"
+#line 53 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 48 "parser.y"
+#line 54 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 49 "parser.y"
+#line 55 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 50 "parser.y"
+#line 56 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 51 "parser.y"
+#line 57 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 52 "parser.y"
+#line 58 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 53 "parser.y"
+#line 59 "parser.y"
     {printf ("json valido!");;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 57 "parser.y"
+#line 63 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 58 "parser.y"
+#line 64 "parser.y"
     {fprintf(htmlFile, "<div class=\"emp-div\"> \n <h1>nombre empresa: $7<h1/> \n</div>\n");;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 59 "parser.y"
+#line 65 "parser.y"
     {;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 60 "parser.y"
+#line 66 "parser.y"
     {;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 68 "parser.y"
+#line 74 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 80 "parser.y"
+#line 86 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 94 "parser.y"
+#line 100 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 104 "parser.y"
+#line 110 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 117 "parser.y"
+#line 123 "parser.y"
     { parse_correcto = 0; yyerror("error sintáctico\n"); ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2019 "parser.tab.c"
+#line 2025 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2227,17 +2233,18 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 135 "parser.y"
+#line 141 "parser.y"
 
 int main() 
 {
     int opcion;
-    char buffer[256];
+    char buffer[256]; //256
     char salir[10];
 
-    FILE *htmlFile;
-    htmlFile = fopen("index.html", "w");
+    
 
+
+    htmlFile = fopen("index.html", "w");
     if (htmlFile == NULL){
         printf("Error al crear el documento html");
         return 1;
@@ -2277,12 +2284,18 @@ int main()
     
         case (2): 
             printf ("ingrese la ruta al archivo de texto: ");
-            scanf ("%s", buffer);
+            scanf ("%255s", buffer); //255(agregado)
+            printf("se escaneo el nombre");
             yyin = fopen(buffer, "r");
-            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>", buffer); // escribe el nombre del archivo en el doc HTML
+            printf("se buscó el archivo");
+            
+            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>\n", buffer); // escribe el nombre del archivo en el doc HTML
+            printf("guardado en html");
+            
             if (!yyin) {
                 perror ("no se puede abrir el archivo");
                 remove("index.html"); // elimina el doc HTML generado
+                
                 exit (EXIT_FAILURE);
             }
             break;
@@ -2290,6 +2303,7 @@ int main()
         default:
             printf ("opcion no valida \n");
             remove("index.html");
+            
             exit (EXIT_FAILURE);
      }
     if (yyparse() == 0 && parse_correcto) {
@@ -2298,12 +2312,13 @@ int main()
         //Finalización del archivo html
         fprintf(htmlFile, "</body>\n");
         fprintf(htmlFile, "</html>\n");
-
         // Cerrar archivo
         fclose(htmlFile);
-
+        printf("se creó el archivo \"index.html\"");
+        
     } else {
         printf("json incorrecto. \n");
+        
         remove("index.html");
     }
     return 0;
@@ -2312,6 +2327,7 @@ int main()
 
 void yyerror(const char *s) {
     fprintf(stderr, "error en la línea %d: %s\n", Nlinea, s);
+    
     remove("index.html");
     return 0;
 }

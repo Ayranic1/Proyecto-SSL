@@ -20,10 +20,10 @@
 caracter [a-zA-Z0-9,.¿?!¡ ] 
 url [a-zA-Z0-9.#/:-_]
 entero [0-9]
-espacio [ ]         //
+espacio [ ]        
 
 %% 
-\n              {Nlinea++;} 
+\n {Nlinea++;} 
 [ \t\n]+ ;
 "_" {return GuionBajo;} 
 "-" {return guinmedio;}

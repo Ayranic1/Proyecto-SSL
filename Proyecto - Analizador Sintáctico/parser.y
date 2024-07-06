@@ -3,9 +3,15 @@
 #include <stdlib.h>
 extern int yylex();
 
+FILE *htmlFile; // genera el HTML
+
 extern FILE *yyin; 
 
 int parse_correcto = 1; //0 = incorrecto, 1 = correcto
+
+FILE *outfile;
+extern int Nlinea;
+
 
 %}
 %union { 
@@ -31,10 +37,10 @@ int parse_correcto = 1; //0 = incorrecto, 1 = correcto
 %type <real> real
 %type <date> date 
 %type <url> url
- 
 
 
-%%   
+
+%%
 
 expr:
     | Sigma
@@ -136,12 +142,13 @@ FECHAFIN:
 int main() 
 {
     int opcion;
-    char buffer[256];
+    char buffer[256]; //256
     char salir[10];
 
-    FILE *htmlFile;
-    htmlFile = fopen("index.html", "w");
+    
 
+
+    htmlFile = fopen("index.html", "w");
     if (htmlFile == NULL){
         printf("Error al crear el documento html");
         return 1;
@@ -181,12 +188,18 @@ int main()
     
         case (2): 
             printf ("ingrese la ruta al archivo de texto: ");
-            scanf ("%s", buffer);
+            scanf ("%255s", buffer); //255(agregado)
+            printf("se escaneo el nombre");
             yyin = fopen(buffer, "r");
-            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>", buffer); // escribe el nombre del archivo en el doc HTML
+            printf("se buscó el archivo");
+            
+            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>\n", buffer); // escribe el nombre del archivo en el doc HTML
+            printf("guardado en html");
+            
             if (!yyin) {
                 perror ("no se puede abrir el archivo");
                 remove("index.html"); // elimina el doc HTML generado
+                
                 exit (EXIT_FAILURE);
             }
             break;
@@ -194,6 +207,7 @@ int main()
         default:
             printf ("opcion no valida \n");
             remove("index.html");
+            
             exit (EXIT_FAILURE);
      }
     if (yyparse() == 0 && parse_correcto) {
@@ -202,12 +216,13 @@ int main()
         //Finalización del archivo html
         fprintf(htmlFile, "</body>\n");
         fprintf(htmlFile, "</html>\n");
-
         // Cerrar archivo
         fclose(htmlFile);
-
+        printf("se creó el archivo \"index.html\"");
+        
     } else {
         printf("json incorrecto. \n");
+        
         remove("index.html");
     }
     return 0;
@@ -216,6 +231,7 @@ int main()
 
 void yyerror(const char *s) {
     fprintf(stderr, "error en la línea %d: %s\n", Nlinea, s);
+    
     remove("index.html");
     return 0;
 }
