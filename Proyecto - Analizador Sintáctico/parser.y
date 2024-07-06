@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 extern int yylex();
-FILE *htmlFile;
 
+FILE *htmlFile;
 extern FILE *yyin; 
 
 int parse_correcto = 1; //0 = incorrecto, 1 = correcto
 
+FILE *outfile;
+extern int Nlinea;
 
 
 %}
@@ -34,10 +36,10 @@ int parse_correcto = 1; //0 = incorrecto, 1 = correcto
 %type <real> real
 %type <date> date 
 %type <url> url
- 
 
 
-%%   
+
+%%
 
 expr:
     | Sigma
