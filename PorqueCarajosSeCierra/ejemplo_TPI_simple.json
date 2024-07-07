@@ -1,0 +1,46 @@
+{
+  "empresas": [
+    {
+      "nombre_empresa": "UTN FRRe",
+      "fundación": 2005,
+      "dirección": {
+        "calle": "French 414",
+        "ciudad": "Resistencia",
+        "país": "Argentina"
+      },
+      "ingresos_anuales": 200000.25,
+      "pyme": false,
+      "link": "https://www.frre.utn.edu.ar",
+      "departamentos": [
+        {
+         "nombre": "Sistemas",
+          "jefe": "Juan Perez",
+          "subdepartamentos": [
+            {
+              "nombre": "Programacion",
+              "jefe": "Fulano",
+              "empleados": [
+              {
+                "nombre": "Mengano",
+                "edad": 30,
+                "cargo": "Product Analyst",
+                "salario": 1250.65,
+                "activo": true,
+                "fecha_contratación": "2022-09-10",
+                "proyectos": [
+                {
+                  "nombre": "Parser JSON",
+                  "estado": "In progress",
+                  "fecha_inicio": "2024-03-25",
+                  "fecha_fin": "2024-07-03"
+                } ]
+              } ]
+              }  ]      
+            }
+            ]
+       
+    }
+  ],
+  "version": "1.0",
+  "firma_digital": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+}

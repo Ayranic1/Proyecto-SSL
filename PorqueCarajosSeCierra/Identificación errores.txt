@@ -1,0 +1,11 @@
+Linea 4 - tag debe ser "nombre_empresa"
+Linea 5 - Fundación debe ser entero
+Linea 7 - pyme debe ser bool
+Linea 8 - URL invalida
+Linea 10 - tag debe ser "departamentos"
+Linea 12 - String lleva comillas
+Linea 20 - Cargo inválido
+Linea 23 - Fecha inválida
+última línea - Coma de más
+
+

@@ -1,0 +1,32 @@
+{
+  "empresas": [
+    {
+      "nombre": "Mi empresa UNO",
+      "fundacion": 2005.05,
+      "ingresos_anuales": 200000.25,
+      "pyme": "false",
+      "link": "https://www..mcdonalds.com.ar",
+
+      "subdepartamentos": [
+        {
+         "nombre": Departamento Ventas,
+          "jefe": null,
+          "subdepartamentos": [
+            {
+              "nombre": "Un subdpto",
+              "empleados": [
+              {
+                "nombre": "Juan Analista",
+                "cargo": "Productt Analyst",
+                "salario": 1250.65,
+                "activo": true,
+                "fecha_contratacion": "2023-55-10",
+                "proyectos": []
+              }
+                ]      
+            }
+            ]
+        }]
+    }
+  ],
+}

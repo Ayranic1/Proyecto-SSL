@@ -1,0 +1,117 @@
+{
+  "empresas": [
+    {
+      "nombre_empresa": "Mi empresa UNO",
+      "fundacion": 2005,
+      "ingresos_anuales": 200000.25,
+      "pyme": false,
+      "link": "https://www.mcdonalds.com.ar",
+      "departamentos": [
+        {
+         "nombre": "Departamento Ventas",
+          "jefe": null,
+          "subdepartamentos": [
+            {
+              "nombre": "Sub-dpto 1",
+              "empleados": [
+              {
+                "nombre": "Juan Analista",
+                "cargo": "Product Analyst",
+                "salario": 1250.65,
+                "activo": true,
+                "fecha_contratacion": "2023-09-10",
+                "proyectos": [
+                {
+                  "nombre": "Mc Flurry",
+                  "estado": "In progress",
+                  "fecha_inicio": "2022-01-10",
+                  "fecha_fin": "2025-08-25"
+                },
+                {
+                  "nombre": "Mcnifica",
+                  "estado": null,
+                  "fecha_inicio": "2020-10-13"
+                } ]
+              },
+              {
+                "nombre": "Krusty Dev",
+                "edad": 45,
+                "cargo": "Developer",
+                "salario": 32250.65,
+                "activo": true,
+                "fecha_contratacion": "2020-05-15",
+                "proyectos": [
+                {
+                  "nombre": "Mc chicken",
+                  "estado": "On hold",
+                  "fecha_inicio": "2022-01-10"
+                } ]
+              }  ]      
+            },
+            {
+              "nombre": "Chicken Sub-Department",
+              "jefe": "Principal Skinner",
+              "empleados": [
+              {
+                "nombre": "Principal Skinner",
+                "edad": 30,
+                "cargo": "Project Manager",
+                "salario": 150.65,
+                "activo": true,
+                "fecha_contratacion": "2023-09-10",
+                "proyectos": [
+                {
+                  "nombre": "Chicken burger",
+                  "estado": "In progress",
+                  "fecha_inicio": "2022-01-10",
+                  "fecha_fin": "2025-08-25"
+                },
+                {
+                  "nombre": "Rechicken",
+                  "estado": "Done",
+                  "fecha_inicio": "2020-10-13",
+                  "fecha_fin": "2024-01-01"
+                } ]
+              }]      
+            } ]
+        },
+        {
+          "nombre": "DPTO Compras",
+           "jefe": "Fat Tony",
+           "subdepartamentos": [
+             {
+               "nombre": "Comestibles",
+               "jefe": "Apu Nahasapeemape",
+               "empleados": [
+               {
+                 "nombre": "Apu Nahasapeemape",
+                 "edad": 34,
+                 "cargo": "Product Analyst",
+                 "salario": 250.65,
+                 "activo": true,
+                 "fecha_contratacion": "2023-09-10",
+                 "proyectos": [
+                 {
+                   "nombre": "kwik-e-mart",
+                   "estado": "In progress",
+                   "fecha_inicio": "2022-01-10"
+                 }]
+               },
+               {
+                "nombre": "Edna",
+                "cargo": "Product Analyst",
+                "salario": 250.65,
+                "activo": true,
+                "fecha_contratacion": "2023-09-10"
+              } ]      
+             },
+             {
+               "nombre": "Cobranzas",
+               "empleados": []      
+             } ]
+         } ]
+    }
+  ],
+  "version": "1.0",
+  "firma_digital": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+}

@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "firma_digital": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
+  "empresas": [
+    {
+      "nombre_empresa": "Mi empresa UNO",
+      "fundacion": 2005,
+      "direccion": {
+        "pais": "USA",
+        "ciudad": "Springfield",
+        "calle": "Calle Falsa 123"
+      },
+      "ingresos_anuales": 200000.25,
+      "pyme": false,
+      "link": "https://www.mcdonalds.com.ar",
+      "departamentos": [
+        {
+          "subdepartamentos": [
+            {
+              "jefe": "Pedro Picapiedras",
+              "nombre": "Sub-dpto 1"    
+            }],
+            "jefe": "Pedro Picapiedras",
+            "nombre": "Departamento Ventas"
+        } ]
+    }
+  ]
+}
