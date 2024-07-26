@@ -180,3 +180,10 @@ button {
   .botonSite{
     margin-left:auto;
   }
+
+  .SDP {
+    font-family: "Poppins", sans-serif;
+    font-size: small;
+    font-weight:700;
+    color: rgb(121, 0, 0);
+  }

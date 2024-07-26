@@ -1,153 +1,164 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 extern int yylex();
+extern void yyerror(const char *s);
+extern FILE *yyin;
+int parse_correcto = 1; // 0 = incorrecto, 1 = correcto
+extern int Nlinea;
+extern int Ncolum;
+extern char *yytext; // Declaración externa de yytext
 
 FILE *htmlFile; // genera el HTML
 
-extern FILE *yyin; 
+void yy_scan_string(const char *str); // Declaración de yy_scan_string
 
-int parse_correcto = 1; //0 = incorrecto, 1 = correcto
+void limpiarPantalla(); // Declaración de la función para limpiar la pantalla
 
-FILE *outfile;
-extern int Nlinea;
-
-
+void resetCounters(); // Declaración de la función para resetear los contadores
 %}
-%union { 
-    char string[30];
-    int entero;
-    float real;
-    char boolean[6];
-    char *reservada;
-    char date;
-    char url;
-}
 
-//fecha
-%token espacio GuionBajo oacento Allave Cllave Acorchete Ccorchete coma real entero boolean 
-%token inprogress todo canceled done onhold date url dospuntos comillas empresas nombreEmpresa  
-%token fundacion barrainvertida barra guinmedio nulo
-%token direccion calle ciudad pais ingresosAnio pyme link deptos nombre activo jefe subdeptos empleados edad 
-%token cargo PA PM UXD MK DEV devops DBA salario fechacontrato proyectos estado fechaI fechaF version firma_digital string error
-%type <string> string
-%type <entero> entero
-%type <reservada> nulo inprogress todo canceled done onhold dospuntos estado empresas nombreEmpresa fundacion calle ciudad pais direccion ingresosAnio pyme link deptos nombre comillas jefe subdeptos empleados edad cargo PA PM UXD MK DEV devops DBA salario activo fechacontrato proyectos fechaI fechaF version firma_digital
-%type <boolean> boolean
-%type <real> real
-%type <date> date 
-%type <url> url
+%token llave1 llave2 comdo empresas dosp cor1 cor2 coma version firma_digital fundacion direccion nombreEmpresa year real link2
+%token calle ciudad pais ingresosanuales pyme link departamentos Estring boolean nombre jefe subdep empleados edad cargo salario activo feccon proyectos estado fecini fecfin cargo2 status day mes null null2
 
 
 
 %%
 
-expr:
-    | Sigma
+
+json:
+    llave1 empres llave2 {fprintf(htmlFile, "</body>\n</html>\n");}
+;
+empres:
+    empresas1
+    | empresas2 version2 comdo firma_digital comdo dosp comdo string comdo
+    | empresas2 comdo firma_digital comdo dosp comdo string comdo
+    | empresas2 version1
+
+    | empresas2 version2 comdo firma_digital comdo dosp nulo
+    | empresas2 comdo firma_digital comdo dosp nulo
+    | empresas2 version1
+
+    | empresas2 version2 comdo firma_digital comdo dosp nulo
+    | empresas2 version2 comdo firma_digital comdo dosp comdo string comdo
+    //este hay que ordenar
+;
+Cempresa:
+    llave1 Datos llave2 coma Cempresa
+    | llave1 Datos llave2 
+;
+Datos:
+    comdo nombreEmpresa comdo dosp comdo string {fprintf(htmlFile, "    <div class=\"empresa\">\n\n        <div class=\"flex-container\">\n            <div>\n                <h1>%s</h1>\n            </div>\n",$6);} comdo coma comdo fundacion comdo dosp year coma comdo direccion comdo dosp llave1 Dire llave2 coma comdo ingresosanuales comdo dosp real coma comdo pyme comdo dosp boolean coma comdo link comdo dosp comdo link2 {fprintf(htmlFile, "            <div class=\"botonSite\"><button class=\"button\" onclick=\"window.location.href='%s';\"><div class=\"bgContainer\"><span>Sitio Web</span><span>Sitio Web</span></div><div class=\"arrowContainer\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 45 38\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M43.7678 20.7678C44.7441 19.7915 44.7441 18.2085 43.7678 17.2322L27.8579 1.32233C26.8816 0.34602 25.2986 0.34602 24.3223 1.32233C23.346 2.29864 23.346 3.88155 24.3223 4.85786L38.4645 19L24.3223 33.1421C23.346 34.1184 23.346 35.7014 24.3223 36.6777C25.2986 37.654 26.8816 37.654 27.8579 36.6777L43.7678 20.7678ZM0 21.5L42 21.5V16.5L0 16.5L0 21.5Z\" fill=\"black\"></path></svg></div></button></div>\n</div>\n", $42);} comdo coma comdo departamentos comdo dosp cor1 dep cor2 
+
+    | comdo nombreEmpresa comdo dosp comdo string {fprintf(htmlFile, "    <div class=\"empresa\">\n\n        <div class=\"flex-container\">\n            <div>\n                <h1>%s</h1>\n            </div>\n          </div>\n",$6);} comdo coma comdo fundacion comdo dosp year coma comdo direccion comdo dosp llave1 Dire llave2 coma comdo ingresosanuales comdo dosp real coma comdo pyme comdo dosp boolean coma comdo link comdo dosp nulo coma comdo departamentos comdo dosp cor1 dep cor2 
+    | comdo nombreEmpresa comdo dosp comdo string {fprintf(htmlFile, "    <div class=\"empresa\">\n\n        <div class=\"flex-container\">\n            <div>\n                <h1>%s</h1>\n            </div>\n          </div>\n",$6);}  comdo coma comdo fundacion comdo dosp year coma comdo direccion comdo dosp nulo coma comdo ingresosanuales comdo dosp real coma comdo pyme comdo dosp boolean coma comdo link comdo dosp nulo coma comdo departamentos comdo dosp cor1 dep cor2 
+    | comdo nombreEmpresa comdo dosp comdo string {fprintf(htmlFile, "    <div class=\"empresa\">\n\n        <div class=\"flex-container\">\n            <div>\n                <h1>%s</h1>\n            </div>\n",$6);} comdo coma comdo fundacion comdo dosp year coma comdo direccion comdo dosp nulo coma comdo ingresosanuales comdo dosp real coma comdo pyme comdo dosp boolean coma comdo link comdo dosp comdo link2 {fprintf(htmlFile, "            <div class=\"botonSite\"><button class=\"button\" onclick=\"window.location.href='%s';\"><div class=\"bgContainer\"><span>Sitio Web</span><span>Sitio Web</span></div><div class=\"arrowContainer\"><svg width=\"25\" height=\"25\" viewBox=\"0 0 45 38\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M43.7678 20.7678C44.7441 19.7915 44.7441 18.2085 43.7678 17.2322L27.8579 1.32233C26.8816 0.34602 25.2986 0.34602 24.3223 1.32233C23.346 2.29864 23.346 3.88155 24.3223 4.85786L38.4645 19L24.3223 33.1421C23.346 34.1184 23.346 35.7014 24.3223 36.6777C25.2986 37.654 26.8816 37.654 27.8579 36.6777L43.7678 20.7678ZM0 21.5L42 21.5V16.5L0 16.5L0 21.5Z\" fill=\"black\"></path></svg></div></button></div>\n</div>\n", $38);} comdo coma comdo departamentos comdo dosp cor1 dep cor2 
+    //este ordenado
+;
+dep:
+    llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h2>%s</h2>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo subdep comdo dosp cor1 subdepartamentos cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h2>%s</h2>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo subdep comdo dosp cor1 subdepartamentos cor2 llave2 
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h2>%s</h2>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo subdep comdo dosp cor1 subdepartamentos cor2 llave2 coma dep
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h2>%s</h2>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo subdep comdo dosp cor1 subdepartamentos cor2 llave2 coma dep
+    //este hay que ordenar
+;
+subdepartamentos:
+    llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo empleados comdo dosp cor1 {fprintf(htmlFile, "        <lu>\n");} emple {fprintf(htmlFile, "        </lu>\n");} cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo empleados comdo dosp cor1 nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de empleados</p> \n");} cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo empleados comdo dosp cor1 {fprintf(htmlFile, "        <lu>\n");} emple {fprintf(htmlFile, "        </lu>\n");} cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo empleados comdo dosp cor1 nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de empleados</p> \n");} cor2 llave2
+
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo empleados comdo dosp cor1 {fprintf(htmlFile, "        <lu>\n");} emple {fprintf(htmlFile, "        </lu>\n");} cor2 llave2 subdepartamentos
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp comdo string comdo coma comdo empleados comdo dosp cor1 nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de empleados</p> \n");} cor2 llave2 subdepartamentos
+   | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo empleados comdo dosp cor1 {fprintf(htmlFile, "        <lu>\n");} emple {fprintf(htmlFile, "        </lu>\n");} cor2 llave2 subdepartamentos
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "        <h3>%s</h3>\n",$7);} comdo coma comdo jefe comdo dosp nulo coma comdo empleados comdo dosp cor1 nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de empleados</p> \n");} cor2 llave2 subdepartamentos
+    //este hay que ordenar
+;
+emple:
+    llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp reales coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp cor1 {fprintf(htmlFile, "            <table>\n<tr class=\"clv-proy\">\n<td>Nombre</td>\n<td>Estado</td>\n<td>Fecha Inicio</td>\n<td>Fecha Fin</td>\n");} proyect {fprintf(htmlFile, "                </table>\n            </li>\n");} cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string  comdo coma comdo edad comdo dosp nulo coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp cor1 {fprintf(htmlFile, "            <table>\n<tr class=\"clv-proy\">\n<td>Nombre</td>\n<td>Estado</td>\n<td>Fecha Inicio</td>\n<td>Fecha Fin</td>\n");} proyect {fprintf(htmlFile, "                </table>\n            </li>\n");} cor2 llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp nulo coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de proyectos</p> \n");} llave2
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp reales coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de proyectos</p> \n");} llave2
+
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp reales coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp cor1 {fprintf(htmlFile, "            <table>\n<tr class=\"clv-proy\">\n<td>Nombre</td>\n<td>Estado</td>\n<td>Fecha Inicio</td>\n<td>Fecha Fin</td>\n");} proyect {fprintf(htmlFile, "                </table>\n            </li>\n");} cor2 llave2 emple
+    | llave1 comdo nombre comdo dosp comdo string  comdo coma comdo edad comdo dosp nulo coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp cor1 {fprintf(htmlFile, "            <table>\n<tr class=\"clv-proy\">\n<td>Nombre</td>\n<td>Estado</td>\n<td>Fecha Inicio</td>\n<td>Fecha Fin</td>\n");} proyect {fprintf(htmlFile, "                </table>\n            </li>\n");} cor2 llave2 emple
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp nulo coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de proyectos</p> \n");} llave2 emple
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<li class=\"empl\"><p class=\"nomEmpl\">%s</p><p class=\"Proyectos\">Proyectos</p></li></ul>\n",$7);} comdo coma comdo edad comdo dosp reales coma comdo cargo comdo dosp comdo cargo2 comdo coma comdo salario comdo dosp real coma comdo activo comdo dosp boolean coma comdo feccon comdo dosp comdo fecha comdo coma comdo proyectos comdo dosp nulo {fprintf(htmlFile, "<p class=\"SDP\">Sin datos de proyectos</p> \n");} llave2 emple
+    //este ordenado
+;
+proyect:
+    llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp comdo status {fprintf(htmlFile, "<td>%s</td> \n",$15);} comdo coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$31);} comdo llave2 {fprintf(htmlFile, " \n</tr>\n");}
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$31);} comdo llave2 {fprintf(htmlFile, " \n</tr>\n");}
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp comdo status {fprintf(htmlFile, "<td>%s</td> \n",$15);} comdo coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} llave2 {fprintf(htmlFile, " \n</tr>\n");}
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} llave2 {fprintf(htmlFile, " \n</tr>\n");}
+
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp comdo status {fprintf(htmlFile, "<td>%s</td> \n",$15);} comdo coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$31);} comdo llave2 {fprintf(htmlFile, " \n</tr>\n");} proyect
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$31);} comdo llave2 {fprintf(htmlFile, " \n</tr>\n");} proyect
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp comdo status {fprintf(htmlFile, "<td>%s</td> \n",$15);} comdo coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} llave2 {fprintf(htmlFile, " \n</tr>\n");} proyect
+    | llave1 comdo nombre comdo dosp comdo string {fprintf(htmlFile, "<tr>\n <td>%s</td> \n",$7);} comdo coma comdo estado comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} coma comdo fecini comdo dosp comdo fecha {fprintf(htmlFile, "<td>%s</td> \n",$23);} comdo coma comdo fecfin comdo dosp nulo {fprintf(htmlFile, "<td>-</td> \n");} llave2 {fprintf(htmlFile, " \n</tr>\n");} proyect
+    //este ordenado
+;
+Dire:
+   comdo calle comdo dosp comdo string comdo coma comdo ciudad comdo dosp comdo string comdo coma comdo pais comdo dosp comdo string comdo
+   | comdo calle comdo dosp comdo string comdo coma comdo pais comdo dosp comdo string comdo coma comdo ciudad comdo dosp comdo string comdo
+   | comdo ciudad comdo dosp comdo string comdo coma comdo pais comdo dosp comdo string comdo coma comdo calle comdo dosp comdo string comdo 
+   | comdo ciudad comdo dosp comdo string comdo coma comdo calle comdo dosp comdo string comdo coma comdo pais comdo dosp comdo string comdo
+   | comdo pais comdo dosp comdo string comdo coma comdo ciudad comdo dosp comdo string comdo coma comdo calle comdo dosp comdo string comdo
+   | comdo pais comdo dosp comdo string comdo coma comdo calle comdo dosp comdo string comdo coma comdo ciudad comdo dosp comdo string comdo
+   //este ya está en cualquier orden
+;
+fecha:
+    year mes day
+    //este no tocar ? (orden)
+;
+reales:
+    real
+    | day
+;
+string:
+    Estring
+    | Estring real
+    | coma string 
+    | Estring string
+    | real string
+
+;
+nulo:
+    null
+    | llave1 null2 llave2
+    | llave1 llave2
+    | cor1 cor2
+;
+// para ordenar más fáciL:
+empresas1:
+    comdo empresas comdo dosp cor1 Cempresa cor2
+;
+empresas2:
+    comdo empresas comdo dosp cor1 Cempresa cor2 coma
+;
+version1:
+    comdo version comdo dosp comdo real comdo
+    | comdo version comdo dosp comdo nulo comdo
+;
+version2:
+    comdo version comdo dosp comdo real comdo coma
+    | comdo version comdo dosp comdo nulo comdo coma
 ;
 
 
-Sigma: Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma Cllave {printf ("json valido!");}
-| Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma nulo Cllave {printf ("json valido!");}
-| Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas version comillas dospuntos comillas real comillas coma comillas firma_digital comillas dospuntos comillas string comillas Cllave {printf ("json valido!");}
-| Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas firma_digital comillas dospuntos comillas string comillas coma comillas version comillas dospuntos comillas real comillas Cllave {printf ("json valido!");}
-| Allave comillas version comillas dospuntos comillas real comillas coma comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas firma_digital comillas dospuntos comillas string comillas Cllave {printf ("json valido!");}
-| Allave comillas version comillas dospuntos comillas real comillas coma comillas firma_digital comillas dospuntos comillas string comillas coma comillas empresas comillas dospuntos Acorchete LISTA Ccorchete Cllave {printf ("json valido!");}
-| Allave comillas firma_digital comillas dospuntos comillas string comillas coma comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas version comillas dospuntos comillas real comillas  Cllave {printf ("json valido!");}
-| Allave comillas firma_digital comillas dospuntos comillas string comillas coma comillas version comillas dospuntos comillas real comillas coma comillas empresas comillas dospuntos Acorchete LISTA Ccorchete Cllave {printf ("json valido!");}
-| Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas version comillas dospuntos comillas real comillas Cllave {printf ("json valido!");}
-| Allave comillas empresas comillas dospuntos Acorchete LISTA Ccorchete coma comillas firma_digital comillas dospuntos comillas string comillas Cllave {printf ("json valido!");}
-;
 
-LISTA: //este no
-    | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-    | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave LOCACION Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA {fprintf(htmlFile, "<div class=\"emp-div\"> \n <h1>nombre empresa: $7<h1/> \n</div>\n");}
-    | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA {}
-    | Allave comillas nombreEmpresa comillas dospuntos comillas string comillas coma comillas fundacion comillas dospuntos entero coma comillas direccion comillas dospuntos Allave nulo Cllave coma comillas ingresosAnio comillas dospuntos real coma comillas pyme comillas dospuntos boolean coma comillas link comillas dospuntos comillas URL comillas coma comillas deptos comillas dospuntos Acorchete DEPTOS Ccorchete coma LISTA  {}
-;
-URL:
-    | nulo 
-    | url 
-;
-
-LOCACION:  //este sí
-        | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-        | comillas calle comillas dospuntos comillas string comillas coma comillas ciudad comillas dospuntos comillas string comillas coma comillas pais comillas dospuntos comillas string comillas
-        | comillas calle comillas dospuntos comillas string comillas coma comillas pais comillas dospuntos comillas string comillas coma comillas ciudad comillas dospuntos comillas string comillas
-        | comillas ciudad comillas dospuntos comillas string comillas coma comillas calle comillas dospuntos comillas string comillas coma comillas pais comillas dospuntos comillas string comillas
-        | comillas ciudad comillas dospuntos comillas string comillas coma comillas pais comillas dospuntos comillas string comillas coma comillas calle comillas dospuntos comillas string comillas
-        | comillas pais comillas dospuntos comillas string comillas coma comillas calle comillas dospuntos comillas string comillas coma comillas ciudad comillas dospuntos comillas string comillas
-        | comillas pais comillas dospuntos comillas string comillas coma comillas ciudad comillas dospuntos comillas string comillas coma comillas calle comillas dospuntos comillas string comillas
-        | nulo 
-
-;
-
-DEPTOS: 
-        | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas jefe comillas dospuntos JEFE comillas subdeptos comillas dospuntos Acorchete SUBDEPTOS Ccorchete Cllave coma DEPTOS
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas subdeptos comillas  dospuntos Acorchete SUBDEPTOS Ccorchete  coma comillas jefe comillas dospuntos JEFE Cllave coma DEPTOS
-        | Allave comillas jefe comillas dospuntos JEFE comillas nombre comillas dospuntos comillas string comillas coma comillas subdeptos comillas dospuntos Acorchete SUBDEPTOS Ccorchete Cllave coma DEPTOS
-        | Allave comillas jefe comillas dospuntos JEFE comillas subdeptos comillas  dospuntos Acorchete SUBDEPTOS Ccorchete  coma comillas nombre comillas dospuntos comillas string comillas coma Cllave coma DEPTOS
-        | Allave comillas subdeptos comillas dospuntos Acorchete SUBDEPTOS Ccorchete coma comillas nombre comillas dospuntos comillas string comillas coma comillas jefe comillas dospuntos JEFE Cllave coma DEPTOS
-        | Allave comillas subdeptos comillas  dospuntos Acorchete SUBDEPTOS Ccorchete  coma comillas jefe comillas dospuntos JEFE comillas nombre comillas dospuntos comillas string comillas coma Cllave coma DEPTOS
-;
-JEFE:
-    | comillas string comillas coma
-    | nulo
-;
-
-SUBDEPTOS:
-        | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas jefe comillas dospuntos JEFE comillas empleados comillas dospuntos Acorchete EMPLEADOS Ccorchete Cllave coma SUBDEPTOS
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas empleados comillas dospuntos  Acorchete EMPLEADOS Ccorchete coma comillas jefe comillas dospuntos JEFE Cllave coma SUBDEPTOS
-        | Allave comillas jefe comillas dospuntos JEFE comillas nombre comillas dospuntos comillas string comillas coma comillas empleados comillas dospuntos Acorchete EMPLEADOS Ccorchete Cllave coma SUBDEPTOS
-        | Allave comillas jefe comillas dospuntos JEFE coma comillas empleados comillas dospuntos  Acorchete EMPLEADOS Ccorchete coma comillas nombre comillas dospuntos comillas string comillas Cllave coma SUBDEPTOS
-        | Allave comillas empleados comillas dospuntos  Acorchete EMPLEADOS Ccorchete coma comillas nombre comillas dospuntos comillas string comillas coma comillas jefe comillas dospuntos JEFE coma SUBDEPTOS
-        | Allave comillas empleados comillas dospuntos  Acorchete EMPLEADOS Ccorchete coma comillas jefe comillas dospuntos JEFE comillas nombre comillas dospuntos comillas string comillas Cllave coma SUBDEPTOS
-;
-
-EMPLEADOS: //este no
-        | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas edad comillas dospuntos EDAD coma comillas cargo comillas dospuntos comillas CARGOEMPLEADO comillas coma comillas salario comillas dospuntos real coma comillas activo comillas dospuntos boolean coma comillas fechacontrato comillas dospuntos comillas date comillas coma comillas proyectos comillas dospuntos Acorchete PROYECTOS Ccorchete Cllave coma EMPLEADOS 
-        | nulo
-;
-EDAD: 
-    | nulo
-    | entero
-;
-//activo
-CARGOEMPLEADO: PA|PM|UXD|MK|DEV|devops|DBA
-; 
-
-PROYECTOS: //este no
-        | error '\n' { parse_correcto = 0; yyerror("error sintáctico\n"); }
-        | Allave comillas nombre comillas dospuntos comillas string comillas coma comillas estado comillas dospuntos EST coma comillas fechaI comillas dospuntos comillas date comillas coma comillas fechaF comillas dospuntos comillas FECHAFIN comillas Cllave coma PROYECTOS
-        | nulo
-;
-EST:
-    |comillas ESTADOP comillas 
-    |nulo
-;
-ESTADOP:
-inprogress|todo|onhold|canceled|done
-
-;
-FECHAFIN:
-        | date 
-        | nulo
-;
 
 
 %%
-int main() 
-{
+
+int main() {
     int opcion;
-    char buffer[256]; //256
-    char salir[10];
-
+    char input[9024];
+    char filename[256];
+    FILE *file;
     
-
-
     htmlFile = fopen("index.html", "w");
     if (htmlFile == NULL){
         printf("Error al crear el documento html");
@@ -163,76 +174,115 @@ int main()
     fprintf(htmlFile, "    <meta charset=\"UTF-8\">\n");
     fprintf(htmlFile, "    <title>синтаксис диких кодеров</title>\n");
     fprintf(htmlFile, "    <link rel=\"icon\" type=\"image/x-icon\" href=\"icon.png\">\n");
-    fprintf(htmlFile, "    <style>\n");
-    fprintf(htmlFile, "    .emp-div {\n");
-    fprintf(htmlFile, "         border: 1px solid grey;\n");
-    fprintf(htmlFile, "         padding: 20px;\n");
-    fprintf(htmlFile, "    }\n");
-    fprintf(htmlFile, "    </style>\n");
+    fprintf(htmlFile, "    <link rel=\"stylesheet\" href=\"styleTPI.css\">\n");
+    fprintf(htmlFile, "\n");
+    fprintf(htmlFile, "    <!-- Funtes de la página -->\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n");
+    fprintf(htmlFile, "    <link href=\"https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap\" rel=\"stylesheet\">\n");
+    fprintf(htmlFile, "    <!-- Fuente ruso -->\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n");
+    fprintf(htmlFile, "    <link href=\"https://fonts.googleapis.com/css2?family=Russo+One&display=swap\" rel=\"stylesheet\">\n");
+    fprintf(htmlFile, "    <!-- Fuente de los nombres de los empleados -->\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n");
+    fprintf(htmlFile, "    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n");
+    fprintf(htmlFile, "    <link href=\"https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Russo+One&display=swap\" rel=\"stylesheet\">\n");
+    fprintf(htmlFile, "\n");
     fprintf(htmlFile, "</head>\n");
     fprintf(htmlFile, "<body>\n");
+    fprintf(htmlFile, "    <header>\n");
+    fprintf(htmlFile, "        <div class=\"flex-container empresaCab\">\n");
+    fprintf(htmlFile, "            <div><img src=\"icon.png\" alt=\"Logo del grupo\" width=\"75px\" height=\"75px\"></div>\n");
+    fprintf(htmlFile, "            <div class=\"txtCab\"><p class=\"nomGrupo\">синтаксис диких кодеров</p></div>\n");
+    fprintf(htmlFile, "        </div>\n");
+    fprintf(htmlFile, "    </header>\n");
 
-    //------
 
-    
-    
-    printf ("Bienvenido al analizador lexico json \n");
-    printf ("(1) ingresar texto manualmente\n(2) ingresar ruta de un .txt \n ctrl+c para cerrar \n");
-    printf ("opcion: ");
-    scanf ("%d", &opcion);
-    switch (opcion) {
-        case (1): 
-            printf ("ingrese el texto a analizar (ctrl+C para terminar): \n");
-            yyin = stdin;
-            break;
-    
-        case (2): 
-            printf ("ingrese la ruta al archivo de texto: ");
-            scanf ("%255s", buffer); //255(agregado)
-            printf("se escaneo el nombre");
-            yyin = fopen(buffer, "r");
-            printf("se buscó el archivo");
-            
-            fprintf(htmlFile, "<h1>Nombre del archivo: %s</h1>\n", buffer); // escribe el nombre del archivo en el doc HTML
-            printf("guardado en html");
-            
-            if (!yyin) {
-                perror ("no se puede abrir el archivo");
-                remove("index.html"); // elimina el doc HTML generado
-                
-                exit (EXIT_FAILURE);
-            }
-            break;
+    while (1) {
+        memset(filename, 0, sizeof(filename));
+        memset(input, 0, sizeof(input));
 
-        default:
-            printf ("opcion no valida \n");
-            remove("index.html");
-            
-            exit (EXIT_FAILURE);
-     }
-    if (yyparse() == 0 && parse_correcto) {
-        printf("json correcto. \n");
+        limpiarPantalla();
+        resetCounters(); // Resetear los contadores de línea y columna
+        printf("Bienvenido al parser:\n");
+        printf("1. Ingresar texto manualmente\n");
+        printf("2. Abrir archivo de entrada\n");
+        printf("3. Salir\n");
+        printf("Seleccione una opcion: ");
+        scanf("%d", &opcion);
 
-        //Finalización del archivo html
-        fprintf(htmlFile, "</body>\n");
-        fprintf(htmlFile, "</html>\n");
-        // Cerrar archivo
-        fclose(htmlFile);
-        printf("se creó el archivo \"index.html\"");
-        
-    } else {
-        printf("json incorrecto. \n");
-        
-        remove("index.html");
+
+        switch (opcion) {
+            case 1:
+                printf("Ingrese el texto: ");
+                scanf(" %[^\n]", input); // Leer el texto ingresado manualmente
+                resetCounters(); // Resetear los contadores de línea y columna
+                yy_scan_string(input); // Pasar el texto ingresado a Flex para el análisis
+                parse_correcto = 1; // Resetear el estado del parser
+                yyparse(); // Iniciar el análisis sintáctico
+                if (parse_correcto) {
+                    printf("Texto aceptado.\n");
+                    fclose(htmlFile);
+                } else {
+                    printf("Texto rechazado.\n");
+                    fclose(htmlFile);
+                    remove("index.html");
+                }
+                break;
+            case 2:
+                printf("Ingrese el nombre del archivo: ");
+                scanf("%s", filename); // Leer el nombre del archivo
+                file = fopen(filename, "r");
+                if (!file) {
+                    fprintf(stderr, "Error: No se puede abrir el archivo ubicado en %s\n", filename);
+                    fclose(htmlFile);
+                    break;
+                }
+                resetCounters(); // Resetear los contadores de línea y columna
+                yyin = file; // Pasar el archivo a Flex para el análisis
+                parse_correcto = 1; // Resetear el estado del parser
+                yyparse(); // Iniciar el análisis sintáctico
+                if (parse_correcto) {
+                    printf("Texto aceptado.\n");
+                    fclose(htmlFile);
+                } else {
+                    printf("Texto rechazado.\n");
+                    fclose(htmlFile);
+                    remove("index.html");
+                }
+                fclose(file);
+                break;
+            case 3:
+                printf("Saliendo...\n");
+                return 0;
+            default:
+                fprintf(stderr, "Opcion no valida. Intente nuevamente.\n");
+        }
+
+        printf("Presione Enter para continuar...");
+        while (getchar() != '\n'); // Espera que el usuario presione Enter
+        getchar();
     }
+
     return 0;
 }
-    
 
 void yyerror(const char *s) {
-    fprintf(stderr, "error en la línea %d: %s\n", Nlinea, s);
-    
-    remove("index.html");
-    return 0;
+    fprintf(stderr, "Error: %s en la linea %d, columna %d, alrededor de '%s'\n", s, Nlinea, Ncolum, yytext);
+    parse_correcto = 0; // Marcar el texto como incorrecto si hay un error
+    resetCounters();
 }
 
+void limpiarPantalla() {
+    #if defined(_WIN32) || defined(_WIN64)
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+void resetCounters() {
+    Nlinea = 1;
+    Ncolum = 1;
+}
